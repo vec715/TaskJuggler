@@ -1377,7 +1377,7 @@ class TaskJuggler
     def query_effort(query)
       query.sortable = query.numerical = work =
         getEffectiveWork(query.startIdx, query.endIdx, query.scopeProperty)
-      query.string = query.scaleLoad(work)
+      query.string = "%s±%s" % [query.scaleLoad(work), work.stddev]
     end
 
     def query_followers(query)
@@ -1593,12 +1593,12 @@ class TaskJuggler
     def getEffectiveWork(startIdx, endIdx, resource = nil)
       # Make sure we have the real Resource and not a proxy.
       resource = resource.ptn if resource
-      return 0.0 if @milestone || startIdx >= endIdx ||
+      return EffortDistribution.new(0.0, 0.0) if @milestone || startIdx >= endIdx ||
                     (resource && !@assignedresources.include?(resource))
 
       @dCache.cached(self, :TaskScenarioEffectiveWork, startIdx, endIdx,
                      resource) do
-        workLoad = 0.0
+        workLoad = EffortDistribution.new(0.0, 0.0)
         if @property.container?
           @property.kids.each do |task|
             workLoad += task.getEffectiveWork(@scenarioIdx, startIdx, endIdx,

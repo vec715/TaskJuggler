@@ -35,6 +35,14 @@ class TaskJuggler
       @stddev == 0.0
     end
 
+    def round(ndigits = 0)
+      EffortDistribution.new(@mean.round(ndigits), @stddev)
+    end
+
+    def abs
+      EffortDistribution.new(@mean.abs, @stddev)
+    end
+
     # Compatibility method for existing code that expects a numeric value
     # @return [Float] the mean effort value
     def to_f
