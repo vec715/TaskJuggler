@@ -3949,6 +3949,9 @@ EOT
     singlePattern('_effort')
     descr('The allocated effort during the reporting period')
 
+    singlePattern('_effortdist')
+    descr('The allocated effort during the reporting period')
+
     singlePattern('_effortdone')
     descr('The already completed effort as of now')
 
@@ -6377,7 +6380,7 @@ EOT
     example('Durations')
     also(%w( effort length ))
 
-    pattern(%w( _effort !workingDuration !workingDuration ), lambda {
+    pattern(%w( _effortdist !workingDuration !workingDuration ), lambda {
       if @val[1] <= 0
         error('effort_zero', "Effort mean value must be positive.",
               @sourceFileInfo[1], @property)

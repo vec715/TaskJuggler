@@ -2149,7 +2149,7 @@ class TaskJuggler
         effortHours = effort * @project['dailyworkinghours']
         requestedEffort = @project.slotsToDays(@effort)
         requestedEffortHours = requestedEffort * @project['dailyworkinghours']
-        if effort > requestedEffort
+        if effort > requestedEffort.mean
           warning('overbooked_effort',
                   "The total effort (#{effort}d or #{effortHours}h) of the " +
                   "provided bookings for task #{@property.fullId} exceeds " +
