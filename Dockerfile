@@ -43,6 +43,9 @@ RUN git init . && \
     git config user.name "Docker Build" && \
     git commit -m "Docker build"
 
+# Install RSpec for testing
+RUN gem install rspec
+
 # Install gem dependencies and build TaskJuggler
 RUN gem build taskjuggler.gemspec && \
     gem install taskjuggler-*.gem
