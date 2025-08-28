@@ -296,7 +296,7 @@ class TaskJuggler
     def setDurationAttribute(attribute, value = true)
       checkContainer(attribute)
       { 'milestone' => false, 'duration' => 0,
-        'length' => 0, 'effort' => nil }.each do |attr, val|
+        'length' => 0, 'effort' => EffortDistribution.new(0, 0) }.each do |attr, val|
         if attribute == attr
           @property[attr, @scenarioIdx] = value
         else

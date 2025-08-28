@@ -100,7 +100,7 @@ class TaskJuggler
       @endPropagated = false
 
       @durationType =
-        if @effort && @effort > 0
+        if @effort > 0
           @hasDurationSpec = true
           :effortTask
         elsif @length > 0
@@ -252,7 +252,7 @@ class TaskJuggler
       end
 
       # If an effort has been specified resources must be allocated as well.
-      if @effort && @effort > 0 && @allocate.empty?
+      if @effort > 0 && @allocate.empty?
         error('effort_no_allocations',
               "Task #{@property.fullId} has an effort but no resource " +
               "allocations.")
@@ -581,7 +581,7 @@ class TaskJuggler
               "end date.")
       end
 
-      if @property.leaf? && (!@effort || @effort == 0) && !@milestone && !@allocate.empty? &&
+      if @property.leaf? && @effort == 0 && !@milestone && !@allocate.empty? &&
          @assignedresources.empty?
         # The user used an 'allocate' for the task, but did not specify any
         # 'effort'. Actual allocations will only happen when resources are
@@ -837,7 +837,7 @@ class TaskJuggler
       end
 
       # Task without efforts of allocations are not critical.
-      return if !@effort || @effort <= 0 || @candidates.empty?
+      return if @effort <= 0 || @candidates.empty?
 
       # Determine the average criticalness of all allocated resources.
       criticalness = 0.0
@@ -1026,7 +1026,7 @@ class TaskJuggler
           propagateDate(a(thisEnd), !atEnd)
         end
       elsif !@scheduled && @start && @end &&
-            !(@length == 0 && @duration == 0 && (!@effort || @effort == 0) &&
+            !(@length == 0 && @duration == 0 && @effort == 0 &&
               !@allocate.empty?)
         markAsScheduled
       end
@@ -1037,7 +1037,7 @@ class TaskJuggler
       # allocation. In these cases, bookResource() has to propagate the final
       # date.
       if atEnd
-        if ignoreEffort || !@effort || @effort == 0
+        if ignoreEffort || @effort == 0
           @endpreds.each do |task, onEnd|
             propagateDateToDep(task, onEnd)
           end
@@ -1046,7 +1046,7 @@ class TaskJuggler
           propagateDateToDep(task, onEnd)
         end
       else
-        if ignoreEffort || !@effort || @effort == 0
+        if ignoreEffort || @effort == 0
           @startsuccs.each do |task, onEnd|
             propagateDateToDep(task, onEnd)
           end
@@ -1919,7 +1919,7 @@ class TaskJuggler
         # Prevent overbooking when multiple resources are allocated and
         # available. If the task has allocation limits we need to make sure
         # that none of them is already exceeded.
-        break if (@effort && @effort > 0 && r['efficiency', @scenarioIdx] > 0.0 &&
+        break if (@effort > 0 && r['efficiency', @scenarioIdx] > 0.0 &&
                   @doneEffort >= @effort.mean) || !limitsOk?(@currentSlotIdx, r)
 
         if r.book(@scenarioIdx, @currentSlotIdx, @property)
@@ -1930,7 +1930,7 @@ class TaskJuggler
           # For effort based task we adjust the the start end (as defined by
           # the scheduling direction) to align with the first booked time
           # slot.
-          if @effort && @effort > 0 && @doneEffort == 0
+          if @effort > 0 && @doneEffort == 0
             if @forward
               propagateDate(@project.idxToDate(@currentSlotIdx), false, true)
               Log.msg { "Task #{@property.fullId} first assignment: " +
@@ -2013,7 +2013,7 @@ class TaskJuggler
                 "Task #{@property.fullId} has 'effortdone' or 'effortleft' " +
                 "attribute but no start date specified.")
         end
-        unless @effort && @effort > 0
+        unless @effort > 0
           error('effort_missing',
                 "Task #{@property.fullId} has 'effortdone' or " +
                 "'effortleft' attribute but no 'effort'.")
@@ -2180,7 +2180,7 @@ class TaskJuggler
       # not a milestone but marked as being scheduled, we set the start and
       # end date according to the first/last booking date unless the date has
       # been set already.
-      if @scheduled && (!@effort || @effort == 0) && @length == 0 && @duration == 0 &&
+      if @scheduled && @effort == 0 && @length == 0 && @duration == 0 &&
          !@milestone
         unless @start || !firstSlotIdx
           @start = @project.idxToDate(firstSlotIdx)

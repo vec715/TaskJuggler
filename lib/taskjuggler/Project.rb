@@ -23,6 +23,7 @@ require 'taskjuggler/DataCache'
 require 'taskjuggler/LeaveList'
 require 'taskjuggler/PropertySet'
 require 'taskjuggler/Attributes'
+require 'taskjuggler/EffortDistribution'
 require 'taskjuggler/RealFormat'
 require 'taskjuggler/PropertyList'
 require 'taskjuggler/TaskDependency'
@@ -265,7 +266,7 @@ class TaskJuggler
         [ 'duration',  'Duration',     DurationAttribute,
               false, false,   true,  0 ],
         [ 'effort',    'Effort',       DurationAttribute,
-              false, false,   true,  0 ],
+              false, false,   true,  EffortDistribution.new(0, 0) ],
         [ 'effortdone', 'Completed Effort', IntegerAttribute,
               false, false,   true,  nil ],
         [ 'effortleft', 'Remaining Effort', IntegerAttribute,

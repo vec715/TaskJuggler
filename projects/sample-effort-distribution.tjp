@@ -1,0 +1,63 @@
+#!/usr/bin/env tj3
+# Sample TaskJuggler project demonstrating effort distribution feature
+
+project "EffortDistributionDemo" "Effort Distribution Test Project" 2024-01-01 +1m {
+    # Set global properties
+    timezone "UTC"
+    currency "USD"
+}
+
+# Define resources
+resource team "Development Team" {
+    resource alice "Alice" {
+        email "alice@example.com"
+    }
+    resource bob "Bob" {
+        email "bob@example.com"
+    }
+}
+
+# Define tasks with different effort specifications
+task project_tasks "Project Tasks" {
+    
+    # Traditional deterministic effort
+    task deterministic "Deterministic Task" {
+        effort 5d
+        allocate alice
+    }
+    
+    # New probabilistic effort with standard deviation
+    task probabilistic "Probabilistic Task" {
+        depends !deterministic
+        effort 8d 2d  # 8 days mean, 2 days standard deviation
+        allocate bob
+    }
+    
+    # Another probabilistic task
+    task uncertain "High Uncertainty Task" {
+        depends !probabilistic
+        effort 10d 3d  # 10 days mean, 3 days standard deviation
+        allocate alice, bob
+    }
+    
+    # Deterministic task (backward compatibility)
+    task final "Final Task" {
+        depends !uncertain
+        effort 3d
+        allocate alice
+    }
+}
+
+# Generate reports
+taskreport "effort_distribution_report" {
+    formats html
+    columns bsi, name, effort, start, end, resources
+    caption "Tasks with Effort Distribution"
+}
+
+# Resource report
+resourcereport "resource_utilization" {
+    formats html
+    columns no, name, effort, freework
+    caption "Resource Utilization"
+}
