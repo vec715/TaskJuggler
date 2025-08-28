@@ -1,0 +1,70 @@
+# Docker ignore file for TaskJuggler
+
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# Documentation and markdown files (keep README.md)
+*.md
+!README.md
+doc/
+docs/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Build artifacts and temporary files
+pkg/
+tmp/
+*.tmp
+*.log
+*.pid
+*.seed
+*.rbc
+.bundle/
+vendor/bundle/
+.yardoc/
+
+# Test files and coverage
+test/results/
+coverage/
+.coverage
+.nyc_output/
+
+# Ruby specific
+.rbenv-version
+.ruby-version
+.rvmrc
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+
+# Backup files
+*~
+*.backup
+*.bak
+*.orig
+
+# Project specific excludes
+examples/*/tmp/
+examples/*/reports/
+examples/*/*.tjp.log
+examples/*/*.debug
+
+# Docker files (don't copy existing docker stuff)
+Dockerfile*
+docker-compose*
+.dockerignore

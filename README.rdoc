@@ -88,6 +88,32 @@ browser is all you need for your work.
 
 Installation instructions can be found {here}[http://www.taskjuggler.org/tj3/manual/Installation.html#Installation].
 
+== Docker Installation (Recommended)
+
+For the easiest setup, use the included Docker container which provides a complete TaskJuggler environment:
+
+  # Build the container
+  docker build -t taskjuggler .
+  
+  # Run a project (Windows PowerShell)
+  docker run --rm -v ${PWD}:/projects taskjuggler tj3 your-project.tjp
+  
+  # Interactive development environment
+  docker run -it -v ${PWD}:/projects taskjuggler /bin/bash
+  
+  # Web interface on port 8080
+  docker run -p 8080:8080 -v ${PWD}:/projects taskjuggler tj3d --port 8080
+
+The Docker container includes the new *effort distribution* feature for uncertainty analysis:
+
+  # Traditional effort
+  effort 5d
+  
+  # Probabilistic effort with standard deviation
+  effort 10d 2d    # 10 days ± 2 days uncertainty
+
+See DOCKER_README.md for complete Docker usage examples and the effort distribution syntax.
+
 = Introduction and Tutorial
 
 To learn more about how to use TaskJuggler please see the {user

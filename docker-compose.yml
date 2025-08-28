@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # Main TaskJuggler service
+  taskjuggler:
+    build: .
+    image: taskjuggler:latest
+    container_name: taskjuggler-dev
+    volumes:
+      # Mount current directory for development
+      - .:/taskjuggler-source
+      # Mount a projects directory for TJP files
+      - ./projects:/projects
+      # Mount examples for testing
+      - ./examples:/examples:ro
+    working_dir: /projects
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+    
+  # TaskJuggler daemon service (web interface)
+  taskjuggler-daemon:
+    build: .
+    image: taskjuggler:latest
+    container_name: taskjuggler-daemon
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./projects:/projects
+      - ./examples:/examples:ro
+    working_dir: /projects
+    command: ["tj3d", "--port", "8080", "--daemon"]
+    
+  # Service for running specific TJP files
+  taskjuggler-runner:
+    build: .
+    image: taskjuggler:latest
+    volumes:
+      - ./projects:/projects
+      - ./examples:/examples:ro
+    working_dir: /projects
+    profiles:
+      - run-project
+    # Usage: docker-compose --profile run-project run taskjuggler-runner tj3 your-project.tjp
+
+networks:
+  default:
+    name: taskjuggler-network
+
+volumes:
+  taskjuggler-data:
+    driver: local
