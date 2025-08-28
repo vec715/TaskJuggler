@@ -17,6 +17,7 @@ require 'taskjuggler/ProjectFileScanner'
 require 'taskjuggler/TjpSyntaxRules'
 require 'taskjuggler/RichText'
 require 'taskjuggler/RichText/RTFHandlers'
+require 'taskjuggler/EffortDistribution'
 
 class TaskJuggler
 
@@ -295,7 +296,7 @@ class TaskJuggler
     def setDurationAttribute(attribute, value = true)
       checkContainer(attribute)
       { 'milestone' => false, 'duration' => 0,
-        'length' => 0, 'effort' => 0 }.each do |attr, val|
+        'length' => 0, 'effort' => nil }.each do |attr, val|
         if attribute == attr
           @property[attr, @scenarioIdx] = value
         else

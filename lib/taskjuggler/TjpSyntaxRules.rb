@@ -12,6 +12,8 @@
 # published by the Free Software Foundation.
 #
 
+require 'taskjuggler/EffortDistribution'
+
 class TaskJuggler
 
 # This module contains the rule definition for the TJP syntax. Every rule is
@@ -6375,6 +6377,19 @@ EOT
     example('Durations')
     also(%w( effort length ))
 
+    pattern(%w( _effort !workingDuration !workingDuration ), lambda {
+      if @val[1] <= 0
+        error('effort_zero', "Effort mean value must be positive.",
+              @sourceFileInfo[1], @property)
+      end
+      if @val[2] < 0
+        error('effort_stddev_negative', "Effort standard deviation cannot be negative.",
+              @sourceFileInfo[2], @property)
+      end
+      effort_dist = EffortDistribution.new(@val[1], @val[2])
+      setDurationAttribute('effort', effort_dist)
+    })
+
     pattern(%w( _effort !workingDuration ), lambda {
       if @val[1] <= 0
         error('effort_zero', "Effort value must at least as large as the " +
@@ -6382,15 +6397,22 @@ EOT
                              "(#{@project['scheduleGranularity'] / 60}min).",
               @sourceFileInfo[1], @property)
       end
-      setDurationAttribute('effort', @val[1])
+      effort_dist = EffortDistribution.new(@val[1])
+      setDurationAttribute('effort', effort_dist)
     })
     doc('effort', <<'EOT'
-Specifies the effort needed to complete the task. An effort of ''''6d'''' (6
-resource-days) can be done with 2 full-time resources in 3 working days. The
-task will not finish before the allocated resources have contributed the
-specified effort. Hence the duration of the task will depend on the
-availability of the allocated resources. The specified effort value must be at
-least as large as the [[timingresolution]].
+Specifies the effort needed to complete the task as a probability distribution.
+Two syntax forms are supported:
+
+* ''''effort 6d'''' - Deterministic effort: 6 resource-days with no uncertainty
+* ''''effort 6d 1d'''' - Probabilistic effort: mean 6 resource-days with standard deviation 1 day
+
+The effort represents the expected amount of work needed. For probabilistic effort,
+the standard deviation indicates the uncertainty in the estimate. An effort of ''''6d 1d''''
+means the task is expected to take 6 resource-days but could vary by ±1 day.
+
+The task will not finish before the allocated resources have contributed at least 
+the mean effort. The duration will depend on resource availability.
 
 WARNING: In almost all real world projects effort is not the product of time
 and resources. This is only true if the task can be partitioned without adding
