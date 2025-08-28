@@ -103,6 +103,9 @@ For the easiest setup, use the included Docker container which provides a comple
   
   # Web interface on port 8080
   docker run -p 8080:8080 -v ${PWD}:/projects taskjuggler tj3d --port 8080
+  
+  # Run tests
+  docker run --rm taskjuggler bash -c "cd /taskjuggler && rake test"
 
 The Docker container includes the new *effort distribution* feature for uncertainty analysis:
 
