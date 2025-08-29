@@ -65,7 +65,7 @@ class TaskJuggler
     # This method must be called at the beginning of each scheduling run. It
     # initializes variables used during the scheduling process.
     def prepareScheduling
-      @effort = 0
+      @effort = EffortDistribution.new(0.0, 0.0)
       initScoreboard if @property.leaf?
     end
 
